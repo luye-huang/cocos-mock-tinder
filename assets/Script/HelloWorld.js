@@ -31,8 +31,7 @@ cc.Class({
         let c = this.node.getComponent(cc.Canvas);
         cc.director.setClearColor(cc.color(238, 232, 170));
         this.node.setContentSize(960, 700);
-        loadImage(cc.find('Canvas/bg1'));
-        // console.log(isIphoneX());
+        // loadImage(cc.find('Canvas/bg1'));
         if (!isIphone()) {
             cc.find('Canvas/header').active = false;
         }

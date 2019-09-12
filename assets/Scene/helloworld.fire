@@ -772,6 +772,7 @@
     "_enabled": true,
     "bg": null,
     "url": "",
+    "urlNext": "",
     "initialX": 0,
     "initialY": 0,
     "trajectory": null

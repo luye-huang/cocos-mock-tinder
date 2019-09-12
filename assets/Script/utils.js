@@ -1,7 +1,8 @@
 export const IMAGES_LENGTH = 4;
-
-export function getUrl(idx = parseInt(Math.random() * IMAGES_LENGTH) + 1) {
-    return cc.url.raw(`resources/${idx}.png`);
+export let img_idx = 0;
+export function getUrl(num) {
+    img_idx = num == undefined ? ++img_idx : num;
+    return cc.url.raw(`resources/${img_idx % IMAGES_LENGTH}.png`);
 }
 
 export function isIphoneX() {
@@ -17,20 +18,26 @@ export function swipeImage(node, to) {
     if (moving) {
         return;
     }
+    const bg = cc.find('Canvas/bg2');
+    bg.active = true;
     moving = true;
     const { x, y } = node;
     node.runAction(cc.sequence(
         cc.moveTo(0.2, cc.p(to, y)),
         cc.moveTo(0.0, cc.p(0, y))
     ));
-    loadImage(node, getUrl());
+
+    loadImage(node, getUrl(img_idx));
+    setTimeout(() => {
+        loadImage(bg);
+    }, 300);
+
     moving = false;
 }
 
 export function loadImage(node, url = getUrl()) {
     cc.loader.load(url, function (err, texture) {
         var sp1 = node.getComponent(cc.Sprite);
-        // var sFrame = new cc.SpriteFrame(texture, new cc.Rect(0, 0, 375, 812), false, cc.Vec2.ZERO, new cc.Size(812, 375));
         var sFrame = new cc.SpriteFrame(texture, new cc.Rect(0, 0, texture.width, texture.height), false, cc.Vec2.ZERO, new cc.Size(1080, 760));
         sp1.spriteFrame = sFrame;
     })

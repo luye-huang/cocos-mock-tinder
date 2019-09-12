@@ -14,6 +14,7 @@ cc.Class({
             buttonEffect(this.node);
         });
         this.node.on(cc.Node.EventType.TOUCH_END, function () {
+            // cc.find('Canvas/bg2').active = false;
             swipeImage(cc.find('Canvas/bg1'), -500);
         }, this);
     },

@@ -1,4 +1,4 @@
-import { trajectory, loadImage, getUrl } from './utils';
+import { trajectory, loadImage, img_idx, getUrl } from './utils';
 const LIMIT = 1600;
 const HORIZONAL_IGNORE_SPEED = 50;
 cc.Class({
@@ -7,6 +7,7 @@ cc.Class({
     properties: {
         bg: null,
         url: '',
+        urlNext: '',
         initialX: 0,
         initialY: 0,
         trajectory: null
@@ -16,26 +17,22 @@ cc.Class({
 
     onLoad() {
         // this.node.active = false;
-
-
         // this.node.setColor(cc.color(238, 232, 170));
         this.initialX = this.node.x;
         this.initialY = this.node.y;
         this.bg = cc.find('Canvas/bg2');
-        this.bg.active = false;
+        // this.bg.active = true;
+        loadImage(this.node);
+        loadImage(this.bg);
         this.node.zIndex = 100;
         this.trajectory = new trajectory(10);
         this.node.children.forEach(c => c.active = false);
     },
 
     start() {
-
-        // cc.find('Canvas/bg1').height = 812;
-        // cc.find('Canvas/bg1').width = 375;
         this.node.on(cc.Node.EventType.TOUCH_START, (event) => {
-            this.url = getUrl();
-            this.bg.active = true;
-            loadImage(this.bg, this.url);
+            // this.url = getUrl();
+            // this.bg.active = true;
         });
         this.node.on(cc.Node.EventType.TOUCH_MOVE, (event) => {
             let delta = event.getDelta();
@@ -81,12 +78,16 @@ cc.Class({
     disposeImg() {
         const { speedX, speedY } = this.trajectory.getSpeed();
         this.trajectory.reset();
+        // this.bg.active = false;
+        // this.bg.active = true;
         let timer = setInterval(() => {
             if (Math.abs(this.node.x) < LIMIT && Math.abs(this.node.y) < LIMIT) {
                 this.node.x += speedX;
                 this.node.y += speedY;
             } else {
                 clearInterval(timer);
+                loadImage(this.node, getUrl(img_idx));
+                loadImage(this.bg);
                 this.reInit();
             }
         }, 20);
@@ -118,10 +119,10 @@ cc.Class({
 
     reInit() {
         this.node.zIndex = -100;
-        loadImage(this.node, this.url);
+        // loadImage(this.node, this.url);
         this.node.x = this.initialX;
         this.node.y = this.initialY;
-        this.bg.active = false;
+        // this.bg.active = false;
         this.node.zIndex = 100;
     },
 
