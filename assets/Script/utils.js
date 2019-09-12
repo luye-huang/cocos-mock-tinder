@@ -1,35 +1,52 @@
-export const IMAGES_LENGTH = 12;
+export const IMAGES_LENGTH = 4;
 
 export function getUrl(idx = parseInt(Math.random() * IMAGES_LENGTH) + 1) {
-    return cc.url.raw(`resources/${idx}.jpg`);
+    return cc.url.raw(`resources/${idx}.png`);
+}
+
+export function isIphoneX() {
+    return /iphone/gi.test(navigator.userAgent) && (screen.height == 812 && screen.width == 375);
+}
+
+export function isIphone() {
+    return /iphone/gi.test(navigator.userAgent);
 }
 
 let moving = false;
-export function swipeImage(node, time, degree, url = getUrl()) {
+export function swipeImage(node, to) {
     if (moving) {
         return;
     }
     moving = true;
-    var rotationTo = cc.rotateTo(time, 0, degree);
-    node.runAction(rotationTo);
-    setTimeout(() => {
-        rotationTo = cc.rotateTo(0, 0, 0);
-        node.runAction(rotationTo);
-        loadImage(node, url);
-        moving = false;
-    }, time * 1000);
+    const { x, y } = node;
+    node.runAction(cc.sequence(
+        cc.moveTo(0.2, cc.p(to, y)),
+        cc.moveTo(0.0, cc.p(0, y))
+    ));
+    loadImage(node, getUrl());
+    moving = false;
 }
 
 export function loadImage(node, url = getUrl()) {
     cc.loader.load(url, function (err, texture) {
         var sp1 = node.getComponent(cc.Sprite);
+        // var sFrame = new cc.SpriteFrame(texture, new cc.Rect(0, 0, 375, 812), false, cc.Vec2.ZERO, new cc.Size(812, 375));
         var sFrame = new cc.SpriteFrame(texture, new cc.Rect(0, 0, texture.width, texture.height), false, cc.Vec2.ZERO, new cc.Size(1080, 760));
         sp1.spriteFrame = sFrame;
     })
 }
 
 
+export function buttonEffect(node) {
+    node.runAction(cc.sequence(
+        cc.scaleTo(0.1, 0.7, 0.7),
+        cc.scaleTo(0.1, 1, 1)
+    ));
+}
+
+
 const TRAJECTORY_SPEED_RATIO = 12;
+const TRAJECTORY_SPEED_IGNORE = 5;
 export class trajectory {
     constructor(len = 10) {
         if (len !== undefined && !Number.isInteger(len)) {
@@ -49,7 +66,7 @@ export class trajectory {
     }
 
     push(unit) {
-        if (Math.abs(unit.x) < 1 && Math.abs(unit.y) < 1) {
+        if (Math.abs(unit.x) < TRAJECTORY_SPEED_IGNORE && Math.abs(unit.y) < TRAJECTORY_SPEED_IGNORE) {
             return;
         }
         if (this.list.length == 0) {

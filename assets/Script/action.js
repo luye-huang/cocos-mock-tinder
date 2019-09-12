@@ -1,5 +1,4 @@
-
-import { swipeImage, buttonEffect } from './utils';
+import { buttonEffect } from './utils';
 
 cc.Class({
     extends: cc.Component,
@@ -13,9 +12,6 @@ cc.Class({
         this.node.on(cc.Node.EventType.TOUCH_START, (event) => {
             buttonEffect(this.node);
         });
-        this.node.on(cc.Node.EventType.TOUCH_END, function () {
-            swipeImage(cc.find('Canvas/bg1'), -500);
-        }, this);
     },
 
     start() {

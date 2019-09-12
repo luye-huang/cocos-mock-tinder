@@ -1,4 +1,4 @@
-import { swipeImage } from './utils';
+import { swipeImage, buttonEffect } from './utils';
 cc.Class({
     extends: cc.Component,
 
@@ -9,8 +9,11 @@ cc.Class({
     // LIFE-CYCLE CALLBACKS:
 
     onLoad: function () {
+        this.node.on(cc.Node.EventType.TOUCH_START, (event) => {
+            buttonEffect(this.node);
+        });
         this.node.on(cc.Node.EventType.TOUCH_END, function () {
-            swipeImage(cc.find('Canvas/bg1'), 1, 100);
+            swipeImage(cc.find('Canvas/bg1'), 500);
         }, this);
     },
     start() {
